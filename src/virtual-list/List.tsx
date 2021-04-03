@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { VariableSizeGrid as Grid } from 'react-window';
 import ResizeObserver from 'rc-resize-observer';
-import classNames from 'classnames';
 import { Table } from 'antd';
 
 // 전체적인 틀, 컴포넌트 이름
@@ -58,9 +57,11 @@ export default function VirtualTable(props: Parameters<typeof Table>[0]) {
     ref.current = connectObject;
     const totalHeight = rawData.length * 54;
 
-    /* Grid 형식으로 리스트를 뽑을건데 
+    /* 
+    Grid 형식으로 리스트를 뽑을건데 
     columnCount는 column의 길이
     columnWidth는 모르겠다..
+    + columnWidth는 얼마나 넓어질지에 대한 설정
     */
     return (
       <Grid
@@ -90,12 +91,7 @@ export default function VirtualTable(props: Parameters<typeof Table>[0]) {
           rowIndex: number;
           style: React.CSSProperties;
         }) => (
-          <div
-            className={classNames('virtual-table-cell', {
-              'virtual-table-cell-last': columnIndex === mergedColumns.length - 1,
-            })}
-            style={style}
-          >
+          <div style={style}>
             {(rawData[rowIndex] as any)[(mergedColumns as any)[columnIndex].dataIndex]}
           </div>
         )}
@@ -103,8 +99,13 @@ export default function VirtualTable(props: Parameters<typeof Table>[0]) {
     );
   };
 
-  // ResizeOberver는 setTableWidth를 새로 설정해 주는데
-  // TableWidth를 왜 새로 측정해주는거지
+  /* 
+  ResizeOberver는 setTableWidth를 새로 설정해 주는데
+  TableWidth를 왜 새로 측정해주는거지
+  + 측정해 주지 않으면 테이블 정렬이 앞에서 부터 빈틈없이 붙어있게 된다
+    TableWidth를 통해서 테이블이 일정 간격으로 벌어질 수 있게 설정
+  + ResizeObserver는 설정한 요소의 크기 변화를 관찰하며 제어한다
+  */
   return (
     <ResizeObserver
       onResize={({ width }) => {
@@ -122,4 +123,10 @@ export default function VirtualTable(props: Parameters<typeof Table>[0]) {
       />
     </ResizeObserver>
   );
+  /* 
+  Table은 실제 테이블을 그려주는 컴포넌트
+  columns로 위에 column을 지정하고
+  pagination을 쓸건지 안 쓸건지 설정
+  component로 bod위에서 만든 renderVirtualList를 실행
+  */
 }
