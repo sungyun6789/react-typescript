@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { VariableSizeGrid as Grid } from 'react-window';
+import { FixedSizeGrid as Grid } from 'react-window';
 import ResizeObserver from 'rc-resize-observer';
 import { Table } from 'antd';
 
@@ -37,25 +37,35 @@ export default function VirtualTable(props: Parameters<typeof Table>[0]) {
         }
       },
     });
-
     return obj;
   });
 
   // 마찬가지로 ref를 사용해서 무슨 코드인지 모르겠으나 이름으로 유추해보면 리스트를 초기화 해주는 함수
-  const resetVirtualGrid = () => {
-    gridRef.current.resetAfterIndices({
-      columnIndex: 0,
-      shouldForceUpdate: false,
-    });
-  };
+  const resetVirtualGrid = () => {};
+
+  //   gridRef.current.resetAfterIndices({
+  //   columnIndex: 0,
+  //   shouldForceUpdate: false,
+  // });
 
   // tableWidth가 바뀔 때 마다 리스트 초기화
   useEffect(() => resetVirtualGrid, [tableWidth]);
 
   // 새로운 리스트 불러오기
-  const renderVirtualList = (rawData: object[], { scrollbarSize, ref, onScroll }: any) => {
-    ref.current = connectObject;
-    const totalHeight = rawData.length * 54;
+  const renderVirtualList = (
+    rawData: object[],
+    // { rowIndex, ref, columnIndex, style, isScrolling }: any,
+  ) => {
+    // ref.current = connectObject;
+    // const totalHeight = rawData.length * 54;
+
+    const Row = ({ columnIndex, rowIndex, isScrolling, style }: any) => (
+      <div style={style}>
+        {isScrolling
+          ? 'Loading...'
+          : (rawData[rowIndex] as any)[(mergedColumns as any)[columnIndex].dataIndex]}
+      </div>
+    );
 
     /* 
     Grid 형식으로 리스트를 뽑을건데 
@@ -66,35 +76,18 @@ export default function VirtualTable(props: Parameters<typeof Table>[0]) {
     return (
       <Grid
         ref={gridRef}
-        className="virtual-grid"
         columnCount={mergedColumns.length}
-        columnWidth={(index: number) => {
-          const { width } = mergedColumns[index];
-          return totalHeight > scroll!.y! && index === mergedColumns.length - 1
-            ? (width as number) - scrollbarSize - 1
-            : (width as number);
-        }}
+        columnWidth={275}
         height={scroll!.y as number}
+        width={tableWidth + 5}
         rowCount={rawData.length}
-        rowHeight={() => 54}
-        width={tableWidth}
-        onScroll={({ scrollLeft }: { scrollLeft: number }) => {
-          onScroll({ scrollLeft });
-        }}
+        rowHeight={35}
+        // onScroll={({ scrollLeft }: { scrollLeft: number }) => {
+        //   onScroll({ scrollLeft });
+        // }}
+        useIsScrolling
       >
-        {({
-          columnIndex,
-          rowIndex,
-          style,
-        }: {
-          columnIndex: number;
-          rowIndex: number;
-          style: React.CSSProperties;
-        }) => (
-          <div style={style}>
-            {(rawData[rowIndex] as any)[(mergedColumns as any)[columnIndex].dataIndex]}
-          </div>
-        )}
+        {Row}
       </Grid>
     );
   };
