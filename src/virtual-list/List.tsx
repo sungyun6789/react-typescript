@@ -27,18 +27,18 @@ export default function VirtualTable(props: Parameters<typeof Table>[0]) {
   // ref를 설정해줬는데 왜인지는 잘 모르겠음
   const gridRef = useRef<any>();
   // 여기도 무슨 코드인지 잘 모르겠음 없어도 잘 돌아감
-  const [connectObject] = useState<any>(() => {
-    const obj = {};
-    Object.defineProperty(obj, 'scrollLeft', {
-      get: () => null,
-      set: (scrollLeft: number) => {
-        if (gridRef.current) {
-          gridRef.current.scrollTo({ scrollLeft });
-        }
-      },
-    });
-    return obj;
-  });
+  // const [connectObject] = useState<any>(() => {
+  //   const obj = {};
+  //   Object.defineProperty(obj, 'scrollLeft', {
+  //     get: () => null,
+  //     set: (scrollLeft: number) => {
+  //       if (gridRef.current) {
+  //         gridRef.current.scrollTo({ scrollLeft });
+  //       }
+  //     },
+  //   });
+  //   return obj;
+  // });
 
   // 마찬가지로 ref를 사용해서 무슨 코드인지 모르겠으나 이름으로 유추해보면 리스트를 초기화 해주는 함수
   const resetVirtualGrid = () => {};
@@ -72,6 +72,7 @@ export default function VirtualTable(props: Parameters<typeof Table>[0]) {
     columnCount는 column의 길이
     columnWidth는 모르겠다..
     + columnWidth는 얼마나 넓어질지에 대한 설정
+    + ref는 연속적인 값의 변경인데 이전 값을 유지하기 위해 사용
     */
     return (
       <Grid
