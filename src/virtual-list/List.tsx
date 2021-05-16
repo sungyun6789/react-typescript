@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FixedSizeGrid as Grid } from 'react-window';
 import ResizeObserver from 'rc-resize-observer';
 import { Table } from 'antd';
@@ -52,46 +52,46 @@ export default function VirtualTable(props: Parameters<typeof Table>[0]) {
   useEffect(() => resetVirtualGrid, [tableWidth]);
 
   // 새로운 리스트 불러오기
-  const renderVirtualList = (
-    rawData: object[],
-    // { rowIndex, ref, columnIndex, style, isScrolling }: any,
-  ) => {
-    // ref.current = connectObject;
-    // const totalHeight = rawData.length * 54;
+  // const renderVirtualList = (
+  //   rawData: object[],
+  //   // { rowIndex, ref, columnIndex, style, isScrolling }: any,
+  // ) => {
+  //   // ref.current = connectObject;
+  //   // const totalHeight = rawData.length * 54;
 
-    const Row = ({ columnIndex, rowIndex, isScrolling, style }: any) => (
-      <div style={style}>
-        {isScrolling
-          ? 'Loading...'
-          : (rawData[rowIndex] as any)[(mergedColumns as any)[columnIndex].dataIndex]}
-      </div>
-    );
+  //   const Row = ({ columnIndex, rowIndex, isScrolling, style }: any) => (
+  //     <div style={style}>
+  //       {isScrolling
+  //         ? 'Loading...'
+  //         : (rawData[rowIndex] as any)[(mergedColumns as any)[columnIndex].dataIndex]}
+  //     </div>
+  //   );
 
-    /* 
-    Grid 형식으로 리스트를 뽑을건데 
-    columnCount는 column의 길이
-    columnWidth는 모르겠다..
-    + columnWidth는 얼마나 넓어질지에 대한 설정
-    + ref는 연속적인 값의 변경인데 이전 값을 유지하기 위해 사용
-    */
-    return (
-      <Grid
-        ref={gridRef}
-        columnCount={mergedColumns.length}
-        columnWidth={275}
-        height={scroll!.y as number}
-        width={tableWidth + 5}
-        rowCount={rawData.length}
-        rowHeight={35}
-        // onScroll={({ scrollLeft }: { scrollLeft: number }) => {
-        //   onScroll({ scrollLeft });
-        // }}
-        useIsScrolling
-      >
-        {Row}
-      </Grid>
-    );
-  };
+  //   /*
+  //   Grid 형식으로 리스트를 뽑을건데
+  //   columnCount는 column의 길이
+  //   columnWidth는 모르겠다..
+  //   + columnWidth는 얼마나 넓어질지에 대한 설정
+  //   + ref는 연속적인 값의 변경인데 이전 값을 유지하기 위해 사용
+  //   */
+  //   return (
+  //     <Grid
+  //       ref={gridRef}
+  //       columnCount={mergedColumns.length}
+  //       columnWidth={275}
+  //       height={scroll!.y as number}
+  //       width={tableWidth + 5}
+  //       rowCount={rawData.length}
+  //       rowHeight={35}
+  //       // onScroll={({ scrollLeft }: { scrollLeft: number }) => {
+  //       //   onScroll({ scrollLeft });
+  //       // }}
+  //       useIsScrolling
+  //     >
+  //       {Row}
+  //     </Grid>
+  //   );
+  // };
 
   /* 
   ResizeOberver는 setTableWidth를 새로 설정해 주는데

@@ -1,4 +1,4 @@
-import { createAction, ActionType, createReducer, action } from 'typesafe-actions';
+import { createAction, ActionType, createReducer } from 'typesafe-actions';
 
 // Action Type
 // 뒤에 as count를 붙어줌으로써 나중에 액션 객체를 만들때 action.type의 값을 추론하는 과정에서
