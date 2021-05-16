@@ -111,9 +111,7 @@ export default function VirtualTable(props: Parameters<typeof Table>[0]) {
         className="virtual-table"
         columns={mergedColumns}
         pagination={false}
-        components={{
-          body: renderVirtualList,
-        }}
+        components={{}}
       />
     </ResizeObserver>
   );
