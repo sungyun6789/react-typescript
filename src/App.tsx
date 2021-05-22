@@ -1,5 +1,5 @@
-import CounterContainer from './todo/containers/CounterContainer';
+import GithubProfileLoader from './middleware/containers/GithubProfileLoader';
 
-const App: React.FC = () => <CounterContainer />;
+const App: React.FC = () => <GithubProfileLoader />;
 
 export default App;
