@@ -1,11 +1,11 @@
 import { FormEvent, useState, ChangeEvent } from 'react';
 import './GithubUsernameForm.css';
 
-type GithubusernameFormProps = {
+type GithubUsernameFormProps = {
   onSubmitUsername: (username: string) => void;
 };
 
-function GithubUsernameForm({ onSubmitUsername }: GithubusernameFormProps) {
+function GithubUsernameForm({ onSubmitUsername }: GithubUsernameFormProps) {
   const [input, setInput] = useState('');
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -19,7 +19,7 @@ function GithubUsernameForm({ onSubmitUsername }: GithubusernameFormProps) {
 
   return (
     <form className="GithubUsernameForm" onSubmit={onSubmit}>
-      <input onChange={onChange} value={input} placeholder="Github 계정명을 입력하세요" />
+      <input onChange={onChange} value={input} placeholder="Github 계정명을 입력하세요." />
       <button type="submit">조회</button>
     </form>
   );

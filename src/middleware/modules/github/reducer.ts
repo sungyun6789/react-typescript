@@ -1,4 +1,4 @@
-import { action, createReducer } from 'typesafe-actions';
+import { createReducer } from 'typesafe-actions';
 import { GithubState, GithubAction } from './types';
 import { GET_USER_PROFILE, GET_USER_PROFILE_SUCCESS, GET_USER_PROFILE_ERROR } from './actions';
 
