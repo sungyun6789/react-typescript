@@ -2,19 +2,16 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Table, Input, Button, Form } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import './Editable.css';
+import {
+  ColumnTypes,
+  DataType,
+  EditableCellProps,
+  EditableRowProps,
+  EditableTableProps,
+  EditableTableState,
+} from './EditTableType';
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-interface Item {
-  key: string;
-  name: string;
-  age: string;
-  address: string;
-}
-
-interface EditableRowProps {
-  index: number;
-}
 
 const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
   const [form] = Form.useForm();
@@ -26,15 +23,6 @@ const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
     </Form>
   );
 };
-
-interface EditableCellProps {
-  title: React.ReactNode;
-  editable: boolean;
-  children: React.ReactNode;
-  dataIndex: keyof Item;
-  record: Item;
-  handleSave: (record: Item) => void;
-}
 
 const EditableCell: React.FC<EditableCellProps> = ({
   title,
@@ -96,22 +84,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
   return <td {...restProps}>{childNode}</td>;
 };
-
-type EditableTableProps = Parameters<typeof Table>[0];
-
-interface DataType {
-  key: React.Key;
-  name: string;
-  age: string;
-  address: string;
-}
-
-interface EditableTableState {
-  dataSource: DataType[];
-  count: number;
-}
-
-type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
 class EditableTable extends React.Component<EditableTableProps, EditableTableState> {
   columns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[];
