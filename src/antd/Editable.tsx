@@ -31,7 +31,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
   children,
   dataIndex,
   record,
-  handleSave,
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
@@ -42,26 +41,16 @@ const EditableCell: React.FC<EditableCellProps> = ({
     form.setFieldsValue({ [dataIndex]: record[dataIndex] });
   };
 
-  const save = async () => {
-    try {
-      const values = await form.validateFields();
-      toggleEdit();
-      handleSave({ ...record, ...values });
-    } catch (errInfo) {
-      console.log('Save failed:', errInfo);
-    }
-  };
-
   let childNode = children;
 
   if (editable) {
     childNode = editing ? (
       <Form.Item name={dataIndex}>
         {/* onPressEnter: Enter키를 눌렀을 때 일어나는 이벤트 onBlur: 포커스를 잃었을 때(이걸 사용해야 포커스가 사라짐) */}
-        <Input onPressEnter={save} onBlur={save} />
+        <Input onPressEnter={toggleEdit} onBlur={toggleEdit} />
       </Form.Item>
     ) : (
-      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
+      <div className="editable-cell-value-wrap" onClick={toggleEdit}>
         {children}
       </div>
     );
@@ -99,17 +88,6 @@ class EditableTable extends React.Component<EditableTableProps, EditableTableSta
     };
   }
 
-  handleSave = (row: DataType) => {
-    const newData = [...this.state.dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
-    const item = newData[index];
-    newData.splice(index, 1, {
-      ...item,
-      ...row,
-    });
-    this.setState({ dataSource: newData });
-  };
-
   render() {
     const { dataSource } = this.state;
     const components = {
@@ -129,7 +107,6 @@ class EditableTable extends React.Component<EditableTableProps, EditableTableSta
           editable: col.editable,
           dataIndex: col.dataIndex,
           title: col.title,
-          handleSave: this.handleSave,
         }),
       };
     });
