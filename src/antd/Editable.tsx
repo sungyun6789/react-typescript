@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Table, Input, Button, Form } from 'antd';
+import React, { useContext, useState } from 'react';
+import { Table, Input, Form } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import './Editable.css';
 import {
@@ -10,10 +10,11 @@ import {
   EditableTableProps,
   EditableTableState,
 } from './EditTableType';
+import { column } from './EditableColumn';
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
+const EditableRow: React.FC<EditableRowProps> = ({ ...props }) => {
   const [form] = Form.useForm();
   return (
     <Form form={form} component={false}>
@@ -34,14 +35,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
-  const inputRef = useRef<Input>(null);
   const form = useContext(EditableContext)!;
-
-  useEffect(() => {
-    if (editing) {
-      inputRef.current!.focus();
-    }
-  }, [editing]);
 
   const toggleEdit = () => {
     setEditing(!editing);
@@ -51,7 +45,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
   const save = async () => {
     try {
       const values = await form.validateFields();
-
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
@@ -63,17 +56,9 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
   if (editable) {
     childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+      <Form.Item name={dataIndex}>
+        {/* onPressEnter: Enter키를 눌렀을 때 일어나는 이벤트 onBlur: 포커스를 잃었을 때(이걸 사용해야 포커스가 사라짐) */}
+        <Input onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
       <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
@@ -86,31 +71,8 @@ const EditableCell: React.FC<EditableCellProps> = ({
 };
 
 class EditableTable extends React.Component<EditableTableProps, EditableTableState> {
-  columns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[];
-
   constructor(props: EditableTableProps) {
     super(props);
-
-    this.columns = [
-      {
-        title: 'name',
-        dataIndex: 'name',
-        width: '30%',
-        editable: true,
-      },
-      {
-        title: 'age',
-        dataIndex: 'age',
-      },
-      {
-        title: 'address',
-        dataIndex: 'address',
-      },
-      {
-        title: 'operation',
-        dataIndex: 'operation',
-      },
-    ];
 
     this.state = {
       dataSource: [
@@ -126,29 +88,16 @@ class EditableTable extends React.Component<EditableTableProps, EditableTableSta
           age: '32',
           address: 'London, Park Lane no. 1',
         },
+        {
+          key: '2',
+          name: 'Edward King 2',
+          age: '32',
+          address: 'London, Park Lane no. 2',
+        },
       ],
-      count: 2,
+      count: 3,
     };
   }
-
-  handleDelete = (key: React.Key) => {
-    const dataSource = [...this.state.dataSource];
-    this.setState({ dataSource: dataSource.filter((item) => item.key !== key) });
-  };
-
-  handleAdd = () => {
-    const { count, dataSource } = this.state;
-    const newData: DataType = {
-      key: count,
-      name: `Edward King ${count}`,
-      age: '32',
-      address: `London, Park Lane no. ${count}`,
-    };
-    this.setState({
-      dataSource: [...dataSource, newData],
-      count: count + 1,
-    });
-  };
 
   handleSave = (row: DataType) => {
     const newData = [...this.state.dataSource];
@@ -169,7 +118,7 @@ class EditableTable extends React.Component<EditableTableProps, EditableTableSta
         cell: EditableCell,
       },
     };
-    const columns = this.columns.map((col) => {
+    const columns = column.map((col) => {
       if (!col.editable) {
         return col;
       }
@@ -186,10 +135,8 @@ class EditableTable extends React.Component<EditableTableProps, EditableTableSta
     });
     return (
       <div>
-        <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-          Add a row
-        </Button>
         <Table
+          pagination={false}
           components={components}
           rowClassName={() => 'editable-row'}
           bordered
