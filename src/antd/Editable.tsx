@@ -25,14 +25,7 @@ const EditableRow: React.FC<EditableRowProps> = ({ ...props }) => {
   );
 };
 
-const EditableCell: React.FC<EditableCellProps> = ({
-  title,
-  editable,
-  children,
-  dataIndex,
-  record,
-  ...restProps
-}) => {
+const EditableCell: React.FC<EditableCellProps> = ({ editable, children, dataIndex, record }) => {
   const [editing, setEditing] = useState(false);
   const form = useContext(EditableContext)!;
 
@@ -46,17 +39,14 @@ const EditableCell: React.FC<EditableCellProps> = ({
   if (editable) {
     childNode = editing ? (
       <Form.Item name={dataIndex}>
-        {/* onPressEnter: Enter키를 눌렀을 때 일어나는 이벤트 onBlur: 포커스를 잃었을 때(이걸 사용해야 포커스가 사라짐) */}
         <Input onPressEnter={toggleEdit} onBlur={toggleEdit} />
       </Form.Item>
     ) : (
-      <div className="editable-cell-value-wrap" onClick={toggleEdit}>
-        {children}
-      </div>
+      <div onClick={toggleEdit}>{children}</div>
     );
   }
 
-  return <td {...restProps}>{childNode}</td>;
+  return <td>{childNode}</td>;
 };
 
 class EditableTable extends React.Component<EditableTableProps, EditableTableState> {
@@ -115,7 +105,6 @@ class EditableTable extends React.Component<EditableTableProps, EditableTableSta
         <Table
           pagination={false}
           components={components}
-          rowClassName={() => 'editable-row'}
           bordered
           dataSource={dataSource}
           columns={columns as ColumnTypes}
