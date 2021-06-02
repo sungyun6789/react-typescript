@@ -90,6 +90,7 @@ class EditableTable extends React.Component<EditableTableProps, EditableTableSta
       if (!col.editable) {
         return col;
       }
+      // map 에서 return 사용할 때 이런식으로
       return {
         ...col,
         onCell: (record: DataType) => ({
