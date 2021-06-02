@@ -101,6 +101,16 @@ class EditableTable extends React.Component<EditableTableProps, EditableTableSta
         }),
       };
     });
+    console.log(
+      columns.map((val) => {
+        if (val.title === '') {
+          return val;
+        }
+        return {
+          ...val,
+        };
+      }),
+    );
     return (
       <div>
         <Table
