@@ -1,7 +1,5 @@
-import "./App.css";
+import GithubProfileLoader from './middleware/containers/GithubProfileLoader';
 
-function App() {
-  return <div className="App"></div>;
-}
+const App: React.FC = () => <GithubProfileLoader />;
 
 export default App;
