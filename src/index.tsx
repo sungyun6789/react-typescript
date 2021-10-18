@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import rootReducer, { rootSaga } from './middleware/modules';
 import createSagaMiddleware from 'redux-saga';
 import App from './App';
+import './locales/i18n';
 
 const sagaMiddleware = createSagaMiddleware();
 
